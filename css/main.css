@@ -14,6 +14,7 @@ body {
     display: flex;
     flex-flow: wrap;
     padding: 1rem;
+    justify-content: center;
 }
 
 img {
@@ -86,4 +87,8 @@ textarea {
 .activeTab {
     color: #16C0B0;
     text-decoration: underline;
+}
+
+.product-description {
+    margin: -440px 0 0 0;
 }
