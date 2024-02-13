@@ -45,7 +45,20 @@ Vue.component('product', {
 
             <button v-on:click="delFromCart">Remove from cart</button>
             <p>Shipping: {{ shipping }}</p>
-            <product-review @review-submitted="addReview"></product-review>
+            
+<div>
+<h2>Reviews</h2>
+
+<product-review @review-submitted="addReview"></product-review>
+<p v-if="!reviews.length">There are no reviews yet.</p>
+<ul>
+  <li v-for="review in reviews">
+  <p>{{ review.name }}</p>
+  <p>Rating: {{ review.rating }}</p>
+  <p>{{ review.review }}</p>
+  </li>
+</ul>
+</div>
 
 
 
@@ -58,6 +71,7 @@ Vue.component('product', {
  `,
     data() {
         return {
+            reviews: [],
             product: "Socks",
             selectedVariant: 0,
             onSale: true,
@@ -96,6 +110,10 @@ Vue.component('product', {
             this.selectedVariant = index;
             console.log(index);
         },
+        addReview(productReview) {
+            this.reviews.push(productReview)
+        }
+
 
 
 
@@ -150,6 +168,13 @@ Vue.component('product-details', {
 Vue.component('product-review', {
     template: `
    <form class="review-form" @submit.prevent="onSubmit">
+   <p v-if="errors.length">
+ <b>Please correct the following error(s):</b>
+ <ul>
+   <li v-for="error in errors">{{ error }}</li>
+ </ul>
+</p>
+
  <p>
    <label for="name">Name:</label>
    <input id="name" v-model="name" placeholder="name">
@@ -177,27 +202,36 @@ Vue.component('product-review', {
 
 </form>
 
- `,
-    data() {
-        return {
-            name: null,
-            review: null,
-            rating: null
 
-        }
-    },
+ `,
+        data() {
+            return {
+                name: null,
+                review: null,
+                rating: null,
+                errors: []
+            }
+        },
+
     methods:{
         onSubmit() {
-            let productReview = {
-                name: this.name,
-                review: this.review,
-                rating: this.rating
+            if(this.name && this.review && this.rating) {
+                let productReview = {
+                    name: this.name,
+                    review: this.review,
+                    rating: this.rating
+                }
+                this.$emit('review-submitted', productReview)
+                this.name = null
+                this.review = null
+                this.rating = null
+            } else {
+                if(!this.name) this.errors.push("Name required.")
+                if(!this.review) this.errors.push("Review required.")
+                if(!this.rating) this.errors.push("Rating required.")
             }
-            this.$emit('review-submitted', productReview)
-            this.name = null
-            this.review = null
-            this.rating = null
         }
+
     }
 
 
@@ -211,7 +245,6 @@ let app = new Vue({
     data: {
         premium: true,
         cart: [],
-        reviews: []
     },
     methods: {
         updateCart(id) {
