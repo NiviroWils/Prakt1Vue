@@ -56,6 +56,7 @@ Vue.component('product', {
   <p>{{ review.name }}</p>
   <p>Rating: {{ review.rating }}</p>
   <p>{{ review.review }}</p>
+  <p>Recommendation: {{ review.recommendation }}</p>
   </li>
 </ul>
 </div>
@@ -195,7 +196,11 @@ Vue.component('product-review', {
      <option>1</option>
    </select>
  </p>
-
+ <p>
+            <label for="recommend">Would you recommend this product?</label><br>
+            <input type="radio" id="yes" value="yes" v-model="recommendation"> <label for="yes">Yes</label><br>
+            <input type="radio" id="no" value="no" v-model="recommendation"> <label for="no">No</label>
+        </p>
  <p>
    <input type="submit" value="Submit"> 
  </p>
@@ -209,26 +214,32 @@ Vue.component('product-review', {
                 name: null,
                 review: null,
                 rating: null,
-                errors: []
+                errors: [],
+                recommendation: null,
             }
         },
 
     methods:{
         onSubmit() {
-            if(this.name && this.review && this.rating) {
+            this.errors = [];
+
+            if (!this.name) this.errors.push("Name required.");
+            if (!this.review) this.errors.push("Review required.");
+            if (!this.rating) this.errors.push("Rating required.");
+            if (!this.recommendation) this.errors.push("Recommendation required.");
+
+            if (this.errors.length === 0) {
                 let productReview = {
                     name: this.name,
                     review: this.review,
-                    rating: this.rating
-                }
-                this.$emit('review-submitted', productReview)
-                this.name = null
-                this.review = null
-                this.rating = null
-            } else {
-                if(!this.name) this.errors.push("Name required.")
-                if(!this.review) this.errors.push("Review required.")
-                if(!this.rating) this.errors.push("Rating required.")
+                    rating: this.rating,
+                    recommendation: this.recommendation
+                };
+                this.$emit('review-submitted', productReview);
+                this.name = null;
+                this.review = null;
+                this.rating = null;
+                this.recommendation = null;
             }
         }
 
