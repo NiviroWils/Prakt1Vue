@@ -21,12 +21,14 @@
         </div>
         <div class="product-info">
             <h1>{{ title }}</h1>
+            <span v-if="onSale">Sale!</span>
             <p v-if="inStock">In stock</p>
             <p v-else :class="{ fontthrough: !inStock }">Out of Stock</p>
             <ul>
                 <li v-for="detail in details">{{ detail }}</li>
 
             </ul>
+            <a v-bind:href="link">More products like this</a>
             <p v-if="onSale">{{ sale }}</p>
             <div
                     class="color-box"
@@ -35,6 +37,9 @@
                     :style="{ backgroundColor:variant.variantColor }"
                     @mouseover="updateProduct(index)"
             ></div>
+            <ul>
+                <li v-for="size in sizes">{{ size }}</li>
+            </ul>
 
 
 

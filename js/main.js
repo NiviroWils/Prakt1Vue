@@ -22,6 +22,8 @@ let app = new Vue({
             }
         ],
         cart: 0,
+        sizes: ['S', 'M', 'L', 'XL', 'XXL', 'XXXL'],
+        link: "https://www.amazon.com/s/ref=nb_sb_noss?url=search-alias%3Daps&field-keywords=socks",
     },
     methods: {
         addToCart() {
