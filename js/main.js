@@ -1,6 +1,3 @@
-
-
-
 Vue.component('product', {
     props: {
         premium: {
@@ -11,9 +8,6 @@ Vue.component('product', {
 
     template: `
    <div class="product">
-	<div class="cart">
-        <p>Cart({{ cart }})</p>
-    </div>
     <div class="product">
         <div class="product-image">
             <img :src="image" :alt="altText"/>
@@ -41,7 +35,14 @@ Vue.component('product', {
 
 
 
-            <button v-on:click="addToCart" :disabled="!inStock"  :class="{ disabledButton: !inStock }">Add to cart</button>
+            <button
+                   v-on:click="addToCart"
+                   :disabled="!inStock"
+                   :class="{ disabledButton: !inStock }"
+           >
+               Add to cart
+           </button>
+
             <button v-on:click="delFromCart">Remove from cart</button>
             <p>Shipping: {{ shipping }}</p>
 
@@ -76,7 +77,6 @@ Vue.component('product', {
                     variantQuantity: 0
                 }
             ],
-            cart: 0,
             sizes: ['S', 'M', 'L', 'XL', 'XXL', 'XXXL'],
             link: "https://www.amazon.com/s/ref=nb_sb_noss?url=search-alias%3Daps&field-keywords=socks",
         }
@@ -84,7 +84,7 @@ Vue.component('product', {
     },
     methods: {
         addToCart() {
-            this.cart += 1
+            this.$emit("add-to-cart", this.variants[this.selectedVariant].variantId);
         },
         delFromCart() {
             if(this.cart > 0)
@@ -94,6 +94,9 @@ Vue.component('product', {
             this.selectedVariant = index;
             console.log(index);
         },
+
+
+
     },
     computed: {
         title() {
@@ -137,7 +140,8 @@ Vue.component('product-details', {
     data() {
         return {}
     },
-    methods: {},
+    methods: {
+    },
     computed: {}
 })
 
@@ -146,6 +150,13 @@ Vue.component('product-details', {
 let app = new Vue({
     el: '#app',
     data: {
-        premium: true
+        premium: true,
+        cart: []
+    },
+    methods: {
+        updateCart(id) {
+            this.cart.push(id);
+        }
     }
 })
+
