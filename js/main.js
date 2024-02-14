@@ -5,7 +5,8 @@ Vue.component('product', {
         premium: {
             type: Boolean,
             required: true
-        }
+        },
+
     },
     template: `
    <div class="product">
@@ -45,7 +46,11 @@ Vue.component('product', {
            </button>
 
             <button v-on:click="delFromCart">Remove from cart</button>
-                <product-tabs :premium="premium" :reviews="reviews" :details="details"></product-tabs>
+            
+
+
+
+                <product-tabs :premium="premium" :reviews="reviews" :details="details" ></product-tabs>
 
 
 
@@ -96,7 +101,6 @@ Vue.component('product', {
             this.selectedVariant = index;
             console.log(index);
         },
-
 
 
 
@@ -260,6 +264,10 @@ Vue.component('product-tabs', {
         reviews: {
             type: Array,
             required: false
+        },
+        order: {
+            type: Array,
+            required: true // Добавляем пропс для передачи данных о заказе
         }
     },
         template: `
@@ -291,11 +299,12 @@ Vue.component('product-tabs', {
        <div v-show="selectedTab === 'Shipping'">
          <product-shipping :premium="premium"></product-shipping>
        </div>
+      
      </div>
 `,
     data() {
         return {
-            tabs: ['Reviews', 'Make a Review', 'Details', 'Shipping'],
+            tabs: ['Reviews', 'Make a Review', 'Details', 'Shipping', ],
             selectedTab: 'Reviews'  // устанавливается с помощью @click
         }
     },
@@ -315,6 +324,7 @@ let app = new Vue({
     data: {
         premium: true,
         cart: [],
+        order: []
     },
     methods: {
         updateCart(id) {
@@ -328,8 +338,11 @@ let app = new Vue({
         },
         addReview(productReview) {
             this.reviews.push(productReview)
-        }
-
+        },
+        makeOrder() { // 2. Метод для переноса данных из cart в order
+            this.order = this.cart.slice(); // Копируем содержимое cart в order
+            this.cart = []; // Очищаем корзину после создания заказа
+        },
     }
 })
 

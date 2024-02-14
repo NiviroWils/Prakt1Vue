@@ -21,13 +21,25 @@
             <li v-for="item in cart">{{ item }}</li>
         </ul>
     </div>
+
+    <button v-on:click="makeOrder">Make Order</button>
+
+    <!-- Вывод содержимого массива order -->
+    <div v-if="order.length > 0">
+        <h2>Your Order:</h2>
+        <ul>
+            <li v-for="item in order" :key="item">
+                {{ item }} <!-- Предполагаем, что элемент массива order содержит ID товара -->
+            </li>
+        </ul>
+    </div>
     <product
             :premium="premium"
             @add-to-cart="updateCart"
             @remove-from-cart="removeFromCart"
+            @make-order="updateOrder"
     ></product>
 
-</div>
 
 
 
