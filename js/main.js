@@ -1,4 +1,5 @@
 let eventBus = new Vue()
+
 Vue.component('product', {
     props: {
         premium: {
@@ -6,7 +7,6 @@ Vue.component('product', {
             required: true
         }
     },
-
     template: `
    <div class="product">
     <div class="product">
@@ -45,8 +45,7 @@ Vue.component('product', {
            </button>
 
             <button v-on:click="delFromCart">Remove from cart</button>
-            <p>Shipping: {{ shipping }}</p>
-<product-tabs :reviews="reviews"></product-tabs>
+                <product-tabs :premium="premium" :reviews="reviews" :details="details"></product-tabs>
 
 
 
@@ -118,13 +117,7 @@ Vue.component('product', {
         sale() {
             return this.brand + ' ' + this.product + 's currently holding a sale';
         },
-        shipping() {
-            if (this.premium) {
-                return "Free";
-            } else {
-                return 2.99
-            }
-        }
+
 
     }
 })
@@ -142,12 +135,6 @@ Vue.component('product-details', {
         <ul>
             <li v-for="detail in details">{{ detail }}</li>
         </ul>`,
-    data() {
-        return {}
-    },
-    methods: {
-    },
-    computed: {}
 })
 
 Vue.component('product-review', {
@@ -234,14 +221,47 @@ Vue.component('product-review', {
 
 })
 
+Vue.component('product-shipping', {
+    props: {
+        premium: {
+            type: Boolean,
+            required: true
+        }
+    },
+    template: `
+    <p>Shipping: {{ shipping }}</p>
+ `,
+    data() {
+        return {
+
+        }
+    },
+    computed: {
+        shipping() {
+            if (this.premium) {
+                return "Free";
+            } else {
+                return 2.99
+            }
+        }
+    }
+})
+
 Vue.component('product-tabs', {
     props: {
+        premium: {
+            type: Boolean,
+            required: true
+        },
+        details: {
+            type: Array,
+            required: true
+        },
         reviews: {
             type: Array,
             required: false
         }
     },
-
         template: `
      <div>   
        <ul>
@@ -258,20 +278,28 @@ Vue.component('product-tabs', {
            <p>{{ review.name }}</p>
            <p>Rating: {{ review.rating }}</p>
            <p>{{ review.review }}</p>
+           <p>Recommendation: {{ review.recommendation }}</p>
            </li>
          </ul>
        </div>
        <div v-show="selectedTab === 'Make a Review'">
          <product-review></product-review>
        </div>
+       <div v-show="selectedTab === 'Details'">
+         <product-details :details="details"></product-details>
+       </div>
+       <div v-show="selectedTab === 'Shipping'">
+         <product-shipping :premium="premium"></product-shipping>
+       </div>
      </div>
 `,
     data() {
         return {
-            tabs: ['Reviews', 'Make a Review'],
+            tabs: ['Reviews', 'Make a Review', 'Details', 'Shipping'],
             selectedTab: 'Reviews'  // устанавливается с помощью @click
         }
     },
+
     mounted() {
         eventBus.$on('review-submitted', productReview => {
             this.reviews.push(productReview)
